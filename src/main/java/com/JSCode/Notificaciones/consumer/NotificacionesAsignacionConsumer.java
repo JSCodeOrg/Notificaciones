@@ -4,6 +4,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.JSCode.DTO.NotificacionAsignacionDTO;
+import com.JSCode.DTO.UserIdDto;
 import com.JSCode.config.RabbitMQConfig;
 import com.JSCode.service.NotificacionService;
 
@@ -21,12 +22,25 @@ public class NotificacionesAsignacionConsumer {
             System.out.println("User ID: " + receptor.getUserId());
             System.out.println("User ID: " + receptor.getToken());
 
-            notificacionService.enviarNotificacionCorreo(receptor.getUserId(), receptor.getOrderId(), receptor.getToken());
+            notificacionService.enviarNotificacionCorreo(receptor.getUserId(), receptor.getOrderId(),
+                    receptor.getToken());
 
-            
-            
         } catch (Exception e) {
             System.err.println("Error al procesar mensaje de notificación: " + e.getMessage());
         }
     }
+
+    @RabbitListener(queues = RabbitMQConfig.QUEUE_NOTIFICACIONES_COMPRA)
+    public void recibirNotificacionCompra(UserIdDto userId) {
+        try {
+            System.out.println("Recibida notificación de compra:" + userId.getUserId() + " con token: " + userId.getToken());
+
+            notificacionService.enviarNotificacionCompra(userId);
+                    
+
+        } catch (Exception e) {
+            System.err.println("Error al procesar mensaje de notificación: " + e.getMessage());
+        }
+    }
+
 }

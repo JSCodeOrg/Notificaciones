@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.JSCode.DTO.UserIdDto;
+
 @Service
 public class NotificacionService {
 
@@ -24,14 +26,15 @@ public class NotificacionService {
 
     public void enviarNotificacionCorreo(Long userId, Long orderId, String token) {
 
-        System.out.println("Enviando notificación por correo al usuario: " + userId + " sobre el pedido: " + orderId + " con token: " + token);
+        System.out.println("Enviando notificación por correo al usuario: " + userId + " sobre el pedido: " + orderId
+                + " con token: " + token);
 
         String usermail = solicitarCorreo(userId, token);
 
         if (usermail != null) {
 
             try {
-                emailService.sendNotificationEmail(usermail);
+                emailService.sendNotificationEmail(usermail, false);
             } catch (Exception e) {
                 System.err.println("Error al enviar el correo de notificación: " + e.getMessage());
             }
@@ -71,5 +74,24 @@ public class NotificacionService {
             System.err.println("❌ Error al solicitar correo del usuario: " + e.getMessage());
             return null;
         }
+    }
+
+    public void enviarNotificacionCompra(UserIdDto userId) {
+        System.out.println("Enviando notificación de compra al usuario: " + userId.getUserId() + " con token: "
+                + userId.getToken());
+        String usermail = solicitarCorreo(userId.getUserId(), userId.getToken());
+
+            if (usermail != null) {
+
+            try {
+                emailService.sendNotificationEmail(usermail, true);
+            } catch (Exception e) {
+                System.err.println("Error al enviar el correo de notificación: " + e.getMessage());
+            }
+
+        } else {
+            System.err.println("No se pudo obtener el correo del usuario con ID: " + userId);
+        }
+
     }
 }

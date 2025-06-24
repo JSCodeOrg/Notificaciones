@@ -16,6 +16,10 @@ public class RabbitMQConfig {
     public static final String EXCHANGE_NOTIFICACIONES = "exchange_notificaciones";
     public static final String ROUTING_KEY_NOTIFICACION_ASIGNACION = "notificacion.asignacion";
 
+    public static final String QUEUE_NOTIFICACIONES_COMPRA = "notificacion_compra";
+    public static final String EXCHANGE_NOTIFICACIONES_COMPRA = "exchange_compra";
+    public static final String ROUTING_KEY_NOTIFICACION_COMPRA = "notificacion.compra";
+
     @Bean
     public Queue queueNotificaciones() {
         return new Queue(QUEUE_NOTIFICACIONES, true);
@@ -30,6 +34,22 @@ public class RabbitMQConfig {
     public Binding bindingNotificaciones(Queue queueNotificaciones, TopicExchange exchangeNotificaciones) {
         return BindingBuilder.bind(queueNotificaciones).to(exchangeNotificaciones)
                 .with(ROUTING_KEY_NOTIFICACION_ASIGNACION);
+    }
+
+    @Bean
+    public Queue queueCompras() {
+        return new Queue(QUEUE_NOTIFICACIONES_COMPRA, true);
+    }
+
+    @Bean
+    public TopicExchange exchangeNotificacionesCompra() {
+        return new TopicExchange(EXCHANGE_NOTIFICACIONES_COMPRA);
+    }
+
+    @Bean
+    public Binding bindingCompras(Queue queueCompras, TopicExchange exchangeNotificacionesCompra) {
+        return BindingBuilder.bind(queueCompras).to(exchangeNotificacionesCompra)
+                .with(ROUTING_KEY_NOTIFICACION_COMPRA);
     }
 
     @Bean
